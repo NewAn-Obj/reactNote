@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 在es6以前，属性的名字必须是指定好的， 属性的值可以是任意的表达式
+
+      // 在es6以后，对象的属性名也可以是用任意的表达式  前提：放在[]中
+      // const obj = {
+      //   name: 'zs' + 'ls',
+      //   age: 18 + 100,
+      // }
+      // console.log(obj)
+      function fn() {
+        return 'abc'
+      }
+      const key = 'age'
+      const obj = {
+        ['na' + 'me']: 'zs',
+        [fn()]: 100,
+        [key]: 200,
+        key: 200,
+      }
+      console.log(obj)
+    </script>
+  </body>
+</html>
