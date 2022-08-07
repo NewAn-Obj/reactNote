@@ -1,0 +1,20 @@
+li {
+  list-style: none;
+}
+
+.skyblue {
+  background-color: skyblue;
+}
+
+.red {
+  color: red;
+}
+.pink {
+  background-color: pink;
+}
+
+.box {
+  width: 400px;
+  height: 400px;
+  border: 1px solid #000;
+}
