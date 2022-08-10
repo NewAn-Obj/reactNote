@@ -12,16 +12,26 @@ export default class Login extends Component {
             <Form
               size="large"
               initialValues={{
-                remember: true,
+                mobile: '13911111111',
+                code: '246810',
+                agree: true,
               }}
               autoComplete="off"
+              onFinish={this.onFinish}
             >
               <Form.Item
+                validateTrigger={['onBlur']}
                 name="mobile"
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your username!',
+                    message: '手机号不能为空',
+                    validateTrigger: 'onBlur',
+                  },
+                  {
+                    pattern: /^1[3-9]\d{9}$/,
+                    message: '手机号格式错误',
+                    validateTrigger: 'onBlur',
                   },
                 ]}
               >
@@ -29,18 +39,39 @@ export default class Login extends Component {
               </Form.Item>
 
               <Form.Item
+                validateTrigger={['onBlur']}
                 name="code"
                 rules={[
                   {
                     required: true,
-                    message: 'Please input your password!',
+                    message: '验证码不能为空',
+                    validateTrigger: 'onBlur',
+                  },
+                  {
+                    pattern: /^\d{6}$/,
+                    message: '验证码格式错误',
+                    validateTrigger: 'onBlur',
                   },
                 ]}
               >
                 <Input placeholder="请输入验证码" />
               </Form.Item>
 
-              <Form.Item valuePropName="checked">
+              <Form.Item
+                valuePropName="checked"
+                name="agree"
+                rules={[
+                  {
+                    validator(_, value) {
+                      if (value) {
+                        return Promise.resolve()
+                      } else {
+                        return Promise.reject(new Error('请阅读并同意用户协议'))
+                      }
+                    },
+                  },
+                ]}
+              >
                 <Checkbox>我已阅读并同意[隐私条款]和[用户协议]</Checkbox>
               </Form.Item>
 
@@ -54,5 +85,8 @@ export default class Login extends Component {
         </div>
       </div>
     )
+  }
+  onFinish = (values) => {
+    console.log(values)
   }
 }
