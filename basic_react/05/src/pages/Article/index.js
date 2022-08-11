@@ -12,11 +12,15 @@ import {
 
 import { Link } from 'react-router-dom'
 import { getChannels } from '../../api/channels'
+import { getArticle } from '../../api/article'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
 export default class Article extends Component {
-  channels = []
+  state = {
+    channels: [],
+    article: {},
+  }
   columns = [
     {
       title: '封面',
@@ -76,6 +80,7 @@ export default class Article extends Component {
   ]
 
   render() {
+    // console.log(this.state.channels)
     return (
       <div className="article">
         <Card
@@ -108,7 +113,7 @@ export default class Article extends Component {
             </Form.Item>
             <Form.Item label="频道" name="channel_id">
               <Select style={{ width: 200 }} placeholder="请选择文章频道">
-                {this.channels.map((item) => (
+                {this.state.channels.map((item) => (
                   <Option value={item.id} key={item.id}>
                     {item.name}
                   </Option>
@@ -134,11 +139,24 @@ export default class Article extends Component {
   onFinish = (value) => {
     console.log(value)
   }
-  async componentDidMount() {
-    const {
-      data: { channels },
-    } = await getChannels()
-    // console.log(channels)
-    this.channels = channels
+  componentDidMount() {
+    this.getChannelsList()
+    this.getArticleList()
+  }
+
+  async getChannelsList() {
+    const res = await getChannels()
+    // console.log(res.data.channels)
+    this.setState({
+      channels: res.data.channels,
+    })
+  }
+
+  async getArticleList() {
+    const res = await getArticle()
+    this.setState({
+      article: res.data,
+    })
+    // console.log(res)
   }
 }
