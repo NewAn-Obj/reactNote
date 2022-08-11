@@ -3,6 +3,7 @@ import { Card, Button, Checkbox, Form, Input, message } from 'antd'
 import './index.scss'
 import logo from '../../assets/logo.png'
 import { login } from '../../api/user'
+import { setToken } from '../../utils/storage'
 export default class Login extends Component {
   state = {
     loading: false,
@@ -102,19 +103,25 @@ export default class Login extends Component {
     })
     try {
       const res = await login(mobile, code)
-      console.log(res)
+      // console.log(res)
       //保存token
-      localStorage.setItem('token', res.data.token)
+      // localStorage.setItem('token', res.data.token)
+      setToken(res.data.token)
       //提示用户登陆成功
-      //   alert('登陆成功，正在前往首页')
-      message.success('登陆成功，正在前往首页')
+      message.success('登陆成功')
       //跳转到首页
-      this.props.history.push('/home')
-    } catch (err) {
+      // console.log('login', this.props)
+      const { state } = this.props.location
+      if (state) {
+        this.props.history.push(state.from)
+      } else {
+        this.props.history.push('/home')
+      }
+    } catch ({ response }) {
       //   alert('error.response.data.message')
-      message.error(err.message)
-      //   message.error(err.response.data.message)
-      //   console.dir(error)
+      // message.error(err.message)
+      message.error(response.data.message)
+      // console.dir(response.data)
       this.setState({
         loading: false,
       })
