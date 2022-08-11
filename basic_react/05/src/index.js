@@ -7,4 +7,8 @@ import './index.css'
 import App from './App'
 
 // 渲染组件
-ReactDOM.createRoot(document.querySelector('#root')).render(<App />)
+ReactDOM.createRoot(document.querySelector('#root')).render(
+  <ConfigProvider locale={locale}>
+    <App />
+  </ConfigProvider>
+)
