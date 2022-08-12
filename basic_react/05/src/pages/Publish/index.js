@@ -1,6 +1,15 @@
 import React, { Component } from 'react'
-import { Card, Breadcrumb, Form, Button, Space, Input, Radio } from 'antd'
-
+import {
+  Card,
+  Breadcrumb,
+  Form,
+  Button,
+  Space,
+  Input,
+  Radio,
+  Upload,
+} from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import Channel from '../../components/channel/channel'
 import ReactQuill from 'react-quill'
@@ -10,6 +19,14 @@ import './index.scss'
 export default class Publish extends Component {
   state = {
     type: 1,
+    fileList: [
+      {
+        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+      },
+      {
+        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+      },
+    ],
   }
   render() {
     const { type } = this.state
@@ -63,11 +80,27 @@ export default class Publish extends Component {
               <Channel></Channel>
             </Form.Item>
             <Form.Item label="封面" name="type">
-              <Radio.Group>
+              <Radio.Group onChange={this.onTypeChange}>
                 <Radio value={1}>单张</Radio>
                 <Radio value={3}>三张</Radio>
                 <Radio value={0}>无图</Radio>
               </Radio.Group>
+            </Form.Item>
+            {/* 上传封面组件 */}
+            <Form.Item wrapperCol={{ offset: 4 }}>
+              {this.state.type !== 0 && (
+                <Upload
+                  listType="picture-card"
+                  fileList={this.state.fileList}
+                  //name属性是上传后文件的名字
+                  name="image"
+                  //action是上传url地址
+                  action="http://geek.itheima.net/v1_0/upload"
+                  onChange={this.uploadImage}
+                >
+                  <PlusOutlined />
+                </Upload>
+              )}
             </Form.Item>
             <Form.Item label="内容" name="content">
               <ReactQuill
@@ -95,6 +128,19 @@ export default class Publish extends Component {
     )
   }
   onFinish = (values) => {
-    console.log(values)
+    // console.log(values)
+  }
+  onTypeChange = (e) => {
+    this.setState({
+      type: e.target.value,
+    })
+    // console.log(e)
+    // console.log(this.state.type)
+  }
+  uploadImage = (e) => {
+    // console.log(e)
+    this.setState({
+      fileList: e.fileList,
+    })
   }
 }

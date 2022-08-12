@@ -29,6 +29,8 @@ export default class Article extends Component {
   }
   state = {
     article: {},
+    // 文章的封面类型（几张图）
+    type: 0,
   }
   columns = [
     {
