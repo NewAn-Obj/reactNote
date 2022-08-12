@@ -10,11 +10,16 @@ import {
   Table,
   Tag,
   Space,
+  Modal,
 } from 'antd'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import { getChannels } from '../../api/channels'
-import { getArticle } from '../../api/article'
+import { getArticle, delArticle } from '../../api/article'
 import defualtImg from '../../assets/error.png'
 
 const { Option } = Select
@@ -90,7 +95,7 @@ export default class Article extends Component {
     {
       title: '操作',
       // key: 'action',
-      render() {
+      render: (data) => {
         return (
           <Space>
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
@@ -99,6 +104,7 @@ export default class Article extends Component {
               danger
               shape="circle"
               icon={<DeleteOutlined />}
+              onClick={() => this.delArticle(data)}
             />
           </Space>
         )
@@ -130,8 +136,8 @@ export default class Article extends Component {
   // ]
 
   render() {
-    console.log(this.reqPamars)
-    console.log(this.state.article)
+    // console.log(this.reqPamars)
+    // console.log(this.state.article)
     const { total_count, results, page, per_page } = this.state.article
     return (
       <div className="article">
@@ -199,8 +205,35 @@ export default class Article extends Component {
       </div>
     )
   }
-  onFinish = (value) => {
-    console.log(value)
+  onFinish = ({ status, channel_id, date }) => {
+    // console.log(date)
+    if (status !== -1) {
+      this.reqPamars.status = status
+    } else {
+      delete this.reqPamars.status
+    }
+    if (channel_id !== undefined) {
+      this.reqPamars.channel_id = channel_id
+    } else {
+      delete this.reqPamars.channel_id
+    }
+    if (date) {
+      this.reqPamars.begin_pubdate = date[0]
+        .startOf('day')
+        .format('YYYY-MM-DD HH:mm:ss')
+      this.reqPamars.end_pubdate = date[1]
+        .endOf('day')
+        .format('YYYY-MM-DD HH:mm:ss')
+      // }
+    } else {
+      // this.reqPamars.begin_pubdate = undefined
+      // this.reqPamars.end_pubdate = undefined
+      delete this.reqPamars.begin_pubdate
+      delete this.reqPamars.end_pubdate
+    }
+    // console.log(date)
+    // console.log(this.reqPamars.begin_pubdate, this.reqPamars.end_pubdate)
+    this.getArticleList()
   }
   componentDidMount() {
     this.getChannelsList()
@@ -228,4 +261,18 @@ export default class Article extends Component {
     this.getArticleList()
   }
   // console.log(page, pageSize)
+  delArticle = ({ id }) => {
+    // console.log(data)
+    Modal.confirm({
+      title: '温馨提示',
+      icon: <ExclamationCircleOutlined />,
+      content: ' 确定要删除此文章吗？',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        await delArticle(id)
+        this.getArticleList()
+      },
+    })
+  }
 }

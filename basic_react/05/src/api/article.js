@@ -10,3 +10,12 @@ export function getArticle(params) {
     params,
   })
 }
+
+/**
+ * 删除文章接口
+ * @param {*} id
+ * @returns
+ */
+export function delArticle(id) {
+  return request.delete(`mp/articles/${id}`)
+}

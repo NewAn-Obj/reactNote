@@ -12,8 +12,9 @@ function App() {
         {/* <Link to="/login">登录</Link>
         <Link to="/home">首页</Link> */}
       </div>
-      <Redirect exact from="/" to="/login"></Redirect>
+
       <Switch>
+        <Redirect exact from="/" to="/login"></Redirect>
         {/* <Route path="/home" component={Home}></Route> */}
         <Route path="/login" component={Login}></Route>
         <AuthRoute path="/home" component={Home}></AuthRoute>
