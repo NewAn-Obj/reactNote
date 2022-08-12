@@ -19,3 +19,17 @@ export function getArticle(params) {
 export function delArticle(id) {
   return request.delete(`mp/articles/${id}`)
 }
+
+/**
+ * 发表文章接口
+ * @param {*} data
+ * @returns
+ */
+export const publishArticle = ({ data }) => {
+  // return request.post('mp/articles', data)
+  return request({
+    method: 'post',
+    url: `/mp/articles`,
+    data,
+  })
+}

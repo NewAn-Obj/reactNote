@@ -8,6 +8,8 @@ import {
   Input,
   Radio,
   Upload,
+  Modal,
+  message,
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
@@ -15,21 +17,19 @@ import Channel from '../../components/channel/channel'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import './index.scss'
+import { publishArticle } from '../../api/article'
 
 export default class Publish extends Component {
   state = {
     type: 1,
-    fileList: [
-      {
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-      {
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      },
-    ],
+    fileList: [],
+    previewShow: false,
+    previewUrl: '',
   }
+  formRef = React.createRef()
   render() {
     const { type } = this.state
+
     return (
       <div className="publish">
         <Card
@@ -46,6 +46,7 @@ export default class Publish extends Component {
         >
           {/*form表单*/}
           <Form
+            ref={this.formRef}
             initialValues={{ type: type, content: '' }}
             validateTrigger={['onBlur', 'onChange']}
             labelCol={{ span: 4 }}
@@ -89,17 +90,37 @@ export default class Publish extends Component {
             {/* 上传封面组件 */}
             <Form.Item wrapperCol={{ offset: 4 }}>
               {this.state.type !== 0 && (
-                <Upload
-                  listType="picture-card"
-                  fileList={this.state.fileList}
-                  //name属性是上传后文件的名字
-                  name="image"
-                  //action是上传url地址
-                  action="http://geek.itheima.net/v1_0/upload"
-                  onChange={this.uploadImage}
-                >
-                  <PlusOutlined />
-                </Upload>
+                <>
+                  <Upload
+                    listType="picture-card"
+                    fileList={this.state.fileList}
+                    onPreview={this.handlePreview}
+                    //name属性是上传后文件的名字
+                    name="image"
+                    //action是上传url地址
+                    action="http://geek.itheima.net/v1_0/upload"
+                    onChange={this.uploadImage}
+                    // beforeUpload={this.beforeUpload}
+                  >
+                    {this.state.fileList.length < this.state.type && (
+                      <PlusOutlined />
+                    )}
+                  </Upload>
+                  <Modal
+                    visible={this.state.previewShow}
+                    title="图片预览"
+                    footer={null}
+                    onCancel={this.handleCancel}
+                  >
+                    <img
+                      alt=""
+                      style={{
+                        width: '100%',
+                      }}
+                      src={this.state.previewUrl}
+                    />
+                  </Modal>
+                </>
               )}
             </Form.Item>
             <Form.Item label="内容" name="content">
@@ -119,7 +140,9 @@ export default class Publish extends Component {
                 <Button type="primary" htmlType="submit" size="large">
                   上传文章
                 </Button>
-                <Button size="large">存为草稿</Button>
+                <Button size="large" onClick={this.addDraft}>
+                  存为草稿
+                </Button>
               </Space>
             </Form.Item>
           </Form>
@@ -127,12 +150,40 @@ export default class Publish extends Component {
       </div>
     )
   }
-  onFinish = (values) => {
+  async save(values) {
+    if (this.state.fileList.length !== this.state.type) {
+      return message.warning('图片数量不符合要求')
+    }
+    // 发表文章
+    const images = this.state.fileList.map((item) => {
+      return item.url || item.response.data.url
+    })
+    const addData = {
+      ...values,
+      cover: {
+        type: this.state.type,
+        images,
+      },
+    }
+    // console.log(addData)
+    try {
+      await publishArticle(addData)
+      message.success('发布成功！')
+      this.props.history.push('/home/article')
+    } catch (error) {
+      message.error('服务器繁忙，请稍后重试')
+    }
+    // console.log(res)
+    // this.props.histiry.push('/home/article')
+  }
+  onFinish = async (values) => {
     // console.log(values)
+    this.save(values)
   }
   onTypeChange = (e) => {
     this.setState({
       type: e.target.value,
+      fileList: [],
     })
     // console.log(e)
     // console.log(this.state.type)
@@ -142,5 +193,35 @@ export default class Publish extends Component {
     this.setState({
       fileList: e.fileList,
     })
+  }
+  handlePreview = (file) => {
+    console.log(file)
+    //如果图片是通过回显的方式得到的那么这个图片的url可以通过file.url得到
+    //如果图片是自己上传的，则要通过file.response.data.url得到
+    const url = file.url || file.response.data.url
+    this.setState({
+      previewShow: true,
+      previewUrl: url,
+    })
+  }
+  handleCancel = () => {
+    this.setState({
+      previewShow: false,
+      previewUrl: '',
+    })
+  }
+  beforeUpload = (data) => {
+    console.log(data)
+    if (data.type !== 'image/jpeg' || data.type !== 'image/png') {
+      message.warning('请上传jpeg或png格式的图片')
+      return Upload.LIST_IGNORE
+    }
+    message.success('图片上传成功')
+  }
+  addDraft = async () => {
+    // console.log('添加草稿')
+    // console.log(this.formRef)
+    const values = await this.formRef.current.validateFields()
+    this.save(values, true)
   }
 }
