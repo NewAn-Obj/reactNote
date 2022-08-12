@@ -33,6 +33,9 @@ instance.interceptors.response.use(
   function (error) {
     // 对响应错误做点什么
     console.log(error.response)
+    if (!error.response) {
+      return Promise.reject('网络繁忙，请稍后重试')
+    }
     if (error.response.status === 401) {
       message.warning('身份过期，请重新登录！')
       removeToken()

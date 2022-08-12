@@ -5,7 +5,6 @@ import {
   Radio,
   Form,
   Button,
-  Select,
   DatePicker,
   Table,
   Tag,
@@ -18,11 +17,10 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
-import { getChannels } from '../../api/channels'
+import Channel from '../../components/channel/channel'
 import { getArticle, delArticle } from '../../api/article'
 import defualtImg from '../../assets/error.png'
 
-const { Option } = Select
 const { RangePicker } = DatePicker
 export default class Article extends Component {
   reqPamars = {
@@ -30,7 +28,6 @@ export default class Article extends Component {
     per_page: 10,
   }
   state = {
-    channels: [],
     article: {},
   }
   columns = [
@@ -170,13 +167,7 @@ export default class Article extends Component {
               </Radio.Group>
             </Form.Item>
             <Form.Item label="频道" name="channel_id">
-              <Select style={{ width: 200 }} placeholder="请选择文章频道">
-                {this.state.channels.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
-              </Select>
+              <Channel></Channel>
             </Form.Item>
             <Form.Item label="日期" name="date">
               <RangePicker />
@@ -236,16 +227,7 @@ export default class Article extends Component {
     this.getArticleList()
   }
   componentDidMount() {
-    this.getChannelsList()
     this.getArticleList()
-  }
-
-  async getChannelsList() {
-    const res = await getChannels()
-    // console.log(res.data.channels)
-    this.setState({
-      channels: res.data.channels,
-    })
   }
 
   async getArticleList() {
