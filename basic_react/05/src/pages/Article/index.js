@@ -20,6 +20,10 @@ import defualtImg from '../../assets/error.png'
 const { Option } = Select
 const { RangePicker } = DatePicker
 export default class Article extends Component {
+  reqPamars = {
+    page: 1,
+    per_page: 10,
+  }
   state = {
     channels: [],
     article: {},
@@ -126,8 +130,9 @@ export default class Article extends Component {
   // ]
 
   render() {
+    console.log(this.reqPamars)
     console.log(this.state.article)
-    const { total_count, results } = this.state.article
+    const { total_count, results, page, per_page } = this.state.article
     return (
       <div className="article">
         <Card
@@ -178,7 +183,18 @@ export default class Article extends Component {
           </Form>
         </Card>
         <Card title={`根据筛选条件，共筛选到${total_count}条结果：`}>
-          <Table columns={this.columns} dataSource={results} rowKey="id" />
+          <Table
+            columns={this.columns}
+            dataSource={results}
+            rowKey="id"
+            pagination={{
+              position: ['bottomCenter '],
+              current: page,
+              pageSize: per_page,
+              total: total_count,
+              onChange: this.pageOnChange,
+            }}
+          />
         </Card>
       </div>
     )
@@ -200,10 +216,16 @@ export default class Article extends Component {
   }
 
   async getArticleList() {
-    const res = await getArticle()
+    const res = await getArticle(this.reqPamars)
     this.setState({
       article: res.data,
     })
     // console.log(res)
   }
+  pageOnChange = (page, pageSize) => {
+    this.reqPamars.page = page
+    this.reqPamars.per_page = pageSize
+    this.getArticleList()
+  }
+  // console.log(page, pageSize)
 }
