@@ -92,6 +92,7 @@ export default class LayoutComponents extends Component {
                 style={{
                   margin: 0,
                   minHeight: 280,
+                  overflow: 'auto',
                 }}
               >
                 <Switch>

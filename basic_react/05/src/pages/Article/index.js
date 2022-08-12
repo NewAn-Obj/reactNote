@@ -8,11 +8,14 @@ import {
   Select,
   DatePicker,
   Table,
+  Tag,
+  Space,
 } from 'antd'
-
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import { getChannels } from '../../api/channels'
 import { getArticle } from '../../api/article'
+import defualtImg from '../../assets/error.png'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -24,63 +27,107 @@ export default class Article extends Component {
   columns = [
     {
       title: '封面',
-      dataIndex: 'name',
+      dataIndex: 'cover',
+      render(cover) {
+        if (cover.type >= 1) {
+          return (
+            <img
+              src={cover.images[0]}
+              alt=""
+              style={{ width: 200, height: 160, objectFit: 'cover' }}
+            />
+          )
+        } else if (cover.type === 0) {
+          return (
+            <img
+              src={defualtImg}
+              alt=""
+              style={{ width: 200, height: 160, objectFit: 'cover' }}
+            />
+          )
+        }
+      },
     },
     {
       title: '标题',
-      dataIndex: 'age',
+      dataIndex: 'title',
     },
     {
       title: '状态',
-      dataIndex: 'address',
+      dataIndex: 'status',
+      render(status) {
+        if (status === 0) {
+          return <Tag color="orange">草稿</Tag>
+        } else if (status === 2) {
+          return <Tag color="green">审核通过</Tag>
+        } else if (status === 1) {
+          return <Tag color="geekblue">待审核</Tag>
+        } else if (status === 3) {
+          return <Tag color="red">审核失败</Tag>
+        }
+      },
     },
     {
       title: '发布时间',
-      dataIndex: 'tags',
+      dataIndex: 'pubdate',
     },
     {
       title: '阅读数',
-      dataIndex: 'tags',
+      dataIndex: 'read_count',
     },
     {
       title: '评论数',
-      dataIndex: 'tags',
+      dataIndex: 'comment_count',
     },
     {
       title: '点赞数',
-      dataIndex: 'tags',
+      dataIndex: 'like_count',
     },
     {
       title: '操作',
       // key: 'action',
+      render() {
+        return (
+          <Space>
+            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Button
+              type="primary"
+              danger
+              shape="circle"
+              icon={<DeleteOutlined />}
+            />
+          </Space>
+        )
+      },
     },
   ]
-  data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-  ]
+  // data = [
+  //   {
+  //     key: '1',
+  //     name: 'John Brown',
+  //     age: 32,
+  //     address: 'New York No. 1 Lake Park',
+  //     tags: ['nice', 'developer'],
+  //   },
+  //   {
+  //     key: '2',
+  //     name: 'Jim Green',
+  //     age: 42,
+  //     address: 'London No. 1 Lake Park',
+  //     tags: ['loser'],
+  //   },
+  //   {
+  //     key: '3',
+  //     name: 'Joe Black',
+  //     age: 32,
+  //     address: 'Sidney No. 1 Lake Park',
+  //     tags: ['cool', 'teacher'],
+  //   },
+  // ]
 
   render() {
-    // console.log(this.state.channels)
+    console.log(this.state.article)
+    const { total_count, results } = this.state.article
     return (
       <div className="article">
         <Card
@@ -130,8 +177,8 @@ export default class Article extends Component {
             </Form.Item>
           </Form>
         </Card>
-        <Card title="根据筛选条件，共筛选到xxx条结果：">
-          <Table columns={this.columns} dataSource={this.data} />
+        <Card title={`根据筛选条件，共筛选到${total_count}条结果：`}>
+          <Table columns={this.columns} dataSource={results} rowKey="id" />
         </Card>
       </div>
     )
