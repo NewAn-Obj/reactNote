@@ -10,9 +10,13 @@ import {
   LogoutOutlined,
 } from '@ant-design/icons'
 import logo from '../../assets/logo.png'
-import Home from '../Home'
-import Article from '../Article'
-import Publish from '../Publish'
+// import Home from '../Home'
+// import Article from '../Article'
+// import Publish from '../Publish'
+const Home = React.lazy(() => import('../Home'))
+const Article = React.lazy(() => import('../Article'))
+const Publish = React.lazy(() => import('../Publish'))
+
 import { removeToken } from '../../utils/storage'
 import { getUserProfile } from '../../api/user'
 const { Header, Content, Sider } = Layout
