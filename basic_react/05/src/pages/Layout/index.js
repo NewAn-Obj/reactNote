@@ -20,6 +20,7 @@ const { Header, Content, Sider } = Layout
 export default class LayoutComponents extends Component {
   state = {
     userProfile: {},
+    selectedKey: this.props.location.pathname,
   }
   render() {
     // console.log(this.props)
@@ -55,7 +56,7 @@ export default class LayoutComponents extends Component {
             <Sider width={200} className="site-layout-background">
               <Menu
                 mode="inline"
-                defaultSelectedKeys={this.props.location.pathname}
+                selectedKeys={this.state.selectedKey}
                 style={{
                   height: '100%',
                   borderRight: 0,
@@ -136,5 +137,20 @@ export default class LayoutComponents extends Component {
       userProfile: res.data,
     })
     // console.log(this.props.location)
+  }
+  //prevProps是上次的props
+  componentDidUpdate(prevProps) {
+    //  组件更新的时候判断是否路由发生变化，变化则改变state的selectedKey的值
+    let pathname = this.props.location.pathname
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      //考虑到在文章列表页面点击编辑按钮跳转到发布文章页面的pathname变化导致错误高亮
+      if (pathname.startsWith('/home/publish')) {
+        pathname = '/home/publish'
+      }
+      this.setState({
+        selectedKey: pathname,
+      })
+    }
+    // console.log(pathname)
   }
 }
