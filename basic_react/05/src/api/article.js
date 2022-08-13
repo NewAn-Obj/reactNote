@@ -33,3 +33,14 @@ export const publishArticle = (data, draft) => {
     data,
   })
 }
+/**
+ * 文章回显是获取文章详情
+ * @param {*} id
+ * @returns
+ */
+export const getArticleById = (id) => {
+  return request({
+    method: 'get',
+    url: `/mp/articles/${id}`,
+  })
+}

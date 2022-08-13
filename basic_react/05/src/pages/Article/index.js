@@ -97,7 +97,12 @@ export default class Article extends Component {
       render: (data) => {
         return (
           <Space>
-            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Button
+              type="primary"
+              shape="circle"
+              icon={<EditOutlined />}
+              onClick={() => this.handleClick(data.id)}
+            />
             <Button
               type="primary"
               danger
@@ -245,8 +250,8 @@ export default class Article extends Component {
     this.getArticleList()
   }
   // console.log(page, pageSize)
-  delArticle = ({ id }) => {
-    // console.log(data)
+  delArticle = (data) => {
+    console.log(data)
     Modal.confirm({
       title: '温馨提示',
       icon: <ExclamationCircleOutlined />,
@@ -254,9 +259,14 @@ export default class Article extends Component {
       okText: '确认',
       cancelText: '取消',
       onOk: async () => {
-        await delArticle(id)
+        await delArticle(data.id)
         this.getArticleList()
       },
     })
+  }
+
+  handleClick = (id) => {
+    // console.log(id)
+    this.props.history.push(`/home/publish/${id}`)
   }
 }

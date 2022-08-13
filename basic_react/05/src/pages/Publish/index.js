@@ -17,7 +17,7 @@ import Channel from '../../components/channel/channel'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import './index.scss'
-import { publishArticle } from '../../api/article'
+import { getArticleById, publishArticle } from '../../api/article'
 
 export default class Publish extends Component {
   state = {
@@ -25,10 +25,12 @@ export default class Publish extends Component {
     fileList: [],
     previewShow: false,
     previewUrl: '',
+    id: this.props.match.params.id,
   }
   formRef = React.createRef()
   render() {
-    const { type } = this.state
+    const { type, id } = this.state
+    // console.log(this.props)
 
     return (
       <div className="publish">
@@ -39,7 +41,7 @@ export default class Publish extends Component {
                 <Link to="/home">首页</Link>
               </Breadcrumb.Item>
               <Breadcrumb.Item>
-                <Link to="/home/publish">发布文章</Link>
+                <Link to="/home/publish">{id ? '修改文章' : '发布文章'}</Link>
               </Breadcrumb.Item>
             </Breadcrumb>
           }
@@ -150,6 +152,26 @@ export default class Publish extends Component {
       </div>
     )
   }
+  async componentDidMount() {
+    //如果是修改问文章，则this.state.id为true，获取文章详情并回显到页面
+    if (this.state.id) {
+      const res = await getArticleById(this.state.id)
+      // console.log(res)
+      const images = res.data.cover.images.map((item) => {
+        return {
+          url: item,
+        }
+      })
+      const values = {
+        ...res.data,
+        type: res.data.cover.type,
+      }
+      this.formRef.current.setFieldsValue(values)
+      this.setState({
+        fileList: images,
+      })
+    }
+  }
   async save(value, draft) {
     if (this.state.fileList.length !== this.state.type) {
       return message.warning('图片数量不符合要求')
@@ -169,6 +191,8 @@ export default class Publish extends Component {
     //   draft)
     // console.log(addData)
     try {
+      // if (this.state.id) {
+      // }
       await publishArticle(
         {
           ...value,
@@ -179,6 +203,7 @@ export default class Publish extends Component {
         },
         draft
       )
+      // console.log(res, value, this.state.type, images)
       message.success('发布成功！')
       this.props.history.push('/home/article')
     } catch (error) {

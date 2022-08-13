@@ -22,6 +22,7 @@ export default class LayoutComponents extends Component {
     userProfile: {},
   }
   render() {
+    // console.log(this.props)
     return (
       <div className="layout">
         <Layout className="page">
@@ -98,7 +99,9 @@ export default class LayoutComponents extends Component {
                 <Switch>
                   <Route exact path="/home" component={Home}></Route>
                   <Route path="/home/article" component={Article}></Route>
-                  <Route path="/home/publish" component={Publish}></Route>
+                  <Route exact path="/home/publish" component={Publish}></Route>
+                  {/* 配置编辑文章跳转的路由 */}
+                  <Route path="/home/publish/:id" component={Publish}></Route>
                 </Switch>
               </Content>
             </Layout>
