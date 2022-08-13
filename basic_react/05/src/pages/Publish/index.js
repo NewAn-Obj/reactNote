@@ -150,7 +150,7 @@ export default class Publish extends Component {
       </div>
     )
   }
-  async save(values) {
+  async save(value, draft) {
     if (this.state.fileList.length !== this.state.type) {
       return message.warning('图片数量不符合要求')
     }
@@ -158,16 +158,27 @@ export default class Publish extends Component {
     const images = this.state.fileList.map((item) => {
       return item.url || item.response.data.url
     })
-    const addData = {
-      ...values,
-      cover: {
-        type: this.state.type,
-        images,
-      },
-    }
+    // const addData =
+    //   ({
+    //     ...value,
+    //     cover: {
+    //       type: this.state.type,
+    //       images,
+    //     },
+    //   },
+    //   draft)
     // console.log(addData)
     try {
-      await publishArticle(addData)
+      await publishArticle(
+        {
+          ...value,
+          cover: {
+            type: this.state.type,
+            images,
+          },
+        },
+        draft
+      )
       message.success('发布成功！')
       this.props.history.push('/home/article')
     } catch (error) {
@@ -178,7 +189,7 @@ export default class Publish extends Component {
   }
   onFinish = async (values) => {
     // console.log(values)
-    this.save(values)
+    this.save(values, false)
   }
   onTypeChange = (e) => {
     this.setState({

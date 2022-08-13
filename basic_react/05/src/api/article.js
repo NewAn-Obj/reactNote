@@ -25,11 +25,11 @@ export function delArticle(id) {
  * @param {*} data
  * @returns
  */
-export const publishArticle = ({ data }) => {
+export const publishArticle = (data, draft) => {
   // return request.post('mp/articles', data)
   return request({
     method: 'post',
-    url: `/mp/articles`,
+    url: `/mp/articles?draft=${draft}`,
     data,
   })
 }
