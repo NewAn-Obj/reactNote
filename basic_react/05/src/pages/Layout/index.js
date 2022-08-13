@@ -99,9 +99,18 @@ export default class LayoutComponents extends Component {
                 <Switch>
                   <Route exact path="/home" component={Home}></Route>
                   <Route path="/home/article" component={Article}></Route>
-                  <Route exact path="/home/publish" component={Publish}></Route>
+                  <Route
+                    exact
+                    path="/home/publish"
+                    component={Publish}
+                    key="publish"
+                  ></Route>
                   {/* 配置编辑文章跳转的路由 */}
-                  <Route path="/home/publish/:id" component={Publish}></Route>
+                  <Route
+                    path="/home/publish/:id"
+                    component={Publish}
+                    key="edit"
+                  ></Route>
                 </Switch>
               </Content>
             </Layout>
