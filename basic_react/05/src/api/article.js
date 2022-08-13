@@ -44,3 +44,17 @@ export const getArticleById = (id) => {
     url: `/mp/articles/${id}`,
   })
 }
+/**
+ * 上传修改文件
+ * @param {*} data
+ * @param {*} draft
+ * @returns
+ */
+export const updataArticle = (data, draft) => {
+  // return request.post('mp/articles', data)
+  return request({
+    method: 'put',
+    url: `/mp/articles/${data.id}?draft=${draft}`,
+    data,
+  })
+}

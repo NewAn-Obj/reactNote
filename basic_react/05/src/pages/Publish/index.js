@@ -17,7 +17,11 @@ import Channel from '../../components/channel/channel'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import './index.scss'
-import { getArticleById, publishArticle } from '../../api/article'
+import {
+  getArticleById,
+  publishArticle,
+  updataArticle,
+} from '../../api/article'
 
 export default class Publish extends Component {
   state = {
@@ -140,7 +144,7 @@ export default class Publish extends Component {
             <Form.Item wrapperCol={{ offset: 4 }}>
               <Space>
                 <Button type="primary" htmlType="submit" size="large">
-                  上传文章
+                  {this.state.id ? '确认修改' : '上传文章'}
                 </Button>
                 <Button size="large" onClick={this.addDraft}>
                   存为草稿
@@ -169,6 +173,7 @@ export default class Publish extends Component {
       this.formRef.current.setFieldsValue(values)
       this.setState({
         fileList: images,
+        type: res.data.cover.type,
       })
     }
   }
@@ -180,31 +185,36 @@ export default class Publish extends Component {
     const images = this.state.fileList.map((item) => {
       return item.url || item.response.data.url
     })
-    // const addData =
-    //   ({
-    //     ...value,
-    //     cover: {
-    //       type: this.state.type,
-    //       images,
-    //     },
-    //   },
-    //   draft)
     // console.log(addData)
     try {
-      // if (this.state.id) {
-      // }
-      await publishArticle(
-        {
-          ...value,
-          cover: {
-            type: this.state.type,
-            images,
+      if (this.state.id) {
+        await updataArticle(
+          {
+            ...value,
+            cover: {
+              type: this.state.type,
+              images,
+            },
+            id: this.state.id,
           },
-        },
-        draft
-      )
+          draft
+        )
+        message.success('修改成功！')
+      } else {
+        await publishArticle(
+          {
+            ...value,
+            cover: {
+              type: this.state.type,
+              images,
+            },
+          },
+          draft
+        )
+        message.success('发布成功！')
+      }
+
       // console.log(res, value, this.state.type, images)
-      message.success('发布成功！')
       this.props.history.push('/home/article')
     } catch (error) {
       message.error('服务器繁忙，请稍后重试')
