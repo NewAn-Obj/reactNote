@@ -4,7 +4,17 @@ export default function todos(state = [], action) {
     case 'GET_LIST':
       return action.list
     case 'ADD_TODO':
-      return [...state, action.todo]
+      return [action.todo, ...state]
+    case 'DEL_TODO':
+      return state.filter((item) => item.id !== action.id)
+    case 'CHANGE_TODO':
+      return state.map((item) => {
+        if (item.id === action.todo.id) {
+          return { ...item, done: !item.done }
+        } else {
+          return { ...item }
+        }
+      })
     default:
       return state
   }

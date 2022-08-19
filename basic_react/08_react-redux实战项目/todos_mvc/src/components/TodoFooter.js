@@ -1,20 +1,47 @@
+import { useSelector, useDispatch } from 'react-redux'
+import { change_type } from '../store/actions/type'
 const TodoFooter = () => {
+  const dispatch = useDispatch()
+  const list = useSelector((state) => state.todos)
+  const count = list.filter((item) => item.done === false).length
+  const type = useSelector((state) => state.filter)
+  // console.log(type)
+  const changetype = (type) => {
+    // console.log(type)
+    dispatch(change_type(type))
+  }
   return (
     <footer className="footer">
       <span className="todo-count">
-        <strong>0</strong> item left
+        <strong>{count}</strong> item left
       </span>
       <ul className="filters">
         <li>
-          <a className="selected" href="#/">
+          <a
+            className={type === 'All' ? 'selected' : ''}
+            href="#/"
+            onClick={() => changetype('All')}
+          >
             All
           </a>
         </li>
         <li>
-          <a href="#/active">Active</a>
+          <a
+            className={type === 'Active' ? 'selected' : ''}
+            href="#/active"
+            onClick={() => changetype('Active')}
+          >
+            Active
+          </a>
         </li>
         <li>
-          <a href="#/completed">Completed</a>
+          <a
+            className={type === 'Completed' ? 'selected' : ''}
+            href="#/completed"
+            onClick={() => changetype('Completed')}
+          >
+            Completed
+          </a>
         </li>
       </ul>
       <button className="clear-completed">Clear completed</button>

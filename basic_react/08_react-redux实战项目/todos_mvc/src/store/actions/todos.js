@@ -25,3 +25,31 @@ export const addTodo = (name) => {
     })
   }
 }
+
+export const del_todo = (id) => {
+  return async (dispatch) => {
+    await axios.delete(`http://localhost:8000/todos/${id}`)
+    dispatch({
+      type: 'DEL_TODO',
+      id,
+    })
+  }
+}
+
+export const change_todo = (id, done) => {
+  return async (dispatch) => {
+    const res = await axios.patch(`http://localhost:8000/todos/${id}`, {
+      done: !done,
+    })
+    // console.log(res.data)
+    dispatch({
+      type: 'CHANGE_TODO',
+      todo: res.data,
+    })
+  }
+}
+
+// export const change_list = (type) => ({
+//   type: 'CHANGE_LIST',
+//   form: type,
+// })
