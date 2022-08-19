@@ -9,7 +9,7 @@ export const bAsync = (money) => {
   return (dispatch) => {
     setTimeout(() => {
       dispatch({ type: 'use_money', money })
-    }, 500)
+    }, 3000)
   }
 }
 
