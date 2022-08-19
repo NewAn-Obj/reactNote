@@ -49,7 +49,7 @@ export const change_todo = (id, done) => {
   }
 }
 
-// export const change_list = (type) => ({
-//   type: 'CHANGE_LIST',
-//   form: type,
+// export const check_All = (done) => ({
+//   type: 'CHECKALL',
+//   done,
 // })

@@ -1,8 +1,10 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import TodoItem from './TodoItem'
+// import { check_All } from '../store/actions/todos'
 const TodoMain = () => {
   const list = useSelector((state) => state.todos)
   const type = useSelector((state) => state.filter)
+  // const dispatch = useDispatch()
   // console.log(type)
   // console.log('list', list)
   let showList = []
@@ -20,9 +22,18 @@ const TodoMain = () => {
     default:
       break
   }
+  // const checkAll = (e) => {
+  //   dispatch(check_All(e.target.checked))
+  // }
   return (
     <section className="main">
-      <input id="toggle-all" className="toggle-all" type="checkbox" />
+      <input
+        id="toggle-all"
+        className="toggle-all"
+        type="checkbox"
+        checked={list.every((item) => item.done)}
+        // onChange={(e) => checkAll(e)}
+      />
       <label htmlFor="toggle-all">Mark all as complete</label>
       <ul className="todo-list">
         {showList.map((item) => {
