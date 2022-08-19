@@ -4,8 +4,15 @@ import TodoFooter from './components/TodoFooter'
 
 import './styles/base.css'
 import './styles/index.css'
+import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { getList } from './store/actions/todos'
 
 const App = () => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(getList())
+  }, [dispatch])
   return (
     <section className="todoapp">
       <TodoHeader />
