@@ -53,3 +53,12 @@ export const change_todo = (id, done) => {
 //   type: 'CHECKALL',
 //   done,
 // })
+export const edit_todo = (name, id) => {
+  return async (dispatch) => {
+    await axios.patch(`http://localhost:8000/todos/${id}`, {
+      name,
+    })
+    // console.log(res.data)
+    dispatch(getList())
+  }
+}

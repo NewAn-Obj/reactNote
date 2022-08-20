@@ -15,6 +15,14 @@ export default function todos(state = [], action) {
           return { ...item }
         }
       })
+    // case 'EDIT_TODO':
+    //   return state.map((item) => {
+    //     if (item.id === action.todo.id) {
+    //       return { ...item, name: action.name }
+    //     } else {
+    //       return { ...item }
+    //     }
+    //   })
     default:
       return state
   }
